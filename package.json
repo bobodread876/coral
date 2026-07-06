@@ -1,0 +1,24 @@
+{
+  "name": "coral",
+  "version": "0.1.0",
+  "description": "AI onboarding concierge that turns Bitcoin curiosity into action — WhatsApp-native, Flash-integrated",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "coral": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "dev": "tsx src/cli.ts"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.0.0"
+  }
+}
