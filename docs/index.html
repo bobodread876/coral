@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coral — Bitcoin onboarding, done properly</title>
+<meta name="description" content="Coral is an onboarding concierge for Bitcoin communities. It lives in WhatsApp, walks newcomers from curiosity to their first payment one step at a time, and hands off to a human exactly when it should.">
+<meta property="og:title" content="Coral — Bitcoin onboarding, done properly">
+<meta property="og:description" content="An onboarding concierge for Bitcoin communities. One step at a time, verified at every step, safe by design.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='9' fill='%23BF4934'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --paper: #FBFAF8;
+    --ink: #161513;
+    --muted: #6E6A63;
+    --line: #E4E1DA;
+    --line-strong: #C9C5BC;
+    --accent: #BF4934;
+    --card: #FFFFFF;
+    --serif: "Charter", "Iowan Old Style", "Palatino", Georgia, serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: "";
+    display: block;
+    height: 3px;
+    background: var(--accent);
+  }
+  .wrap { max-width: 1020px; margin: 0 auto; padding: 0 28px; }
+
+  a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+  a:hover { color: var(--accent); }
+
+  /* ── Masthead ─────────────────────── */
+  header.masthead {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding: 26px 0 24px; border-bottom: 1px solid var(--line);
+  }
+  .wordmark {
+    font-family: var(--serif); font-size: 22px; font-weight: 700;
+    letter-spacing: 0.02em; text-decoration: none;
+  }
+  .wordmark .dot { color: var(--accent); }
+  nav.top { display: flex; gap: 26px; font-size: 14px; }
+  nav.top a { text-decoration: none; color: var(--muted); }
+  nav.top a:hover { color: var(--ink); }
+
+  .eyebrow {
+    font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 14px;
+  }
+
+  /* ── Hero ─────────────────────────── */
+  .hero { padding: 84px 0 72px; border-bottom: 1px solid var(--line); }
+  .hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 64px; align-items: start; }
+  h1 {
+    font-family: var(--serif); font-size: 46px; line-height: 1.14;
+    font-weight: 700; letter-spacing: -0.01em; margin-bottom: 22px;
+  }
+  .hero p.lede { font-size: 19px; color: var(--muted); max-width: 46ch; margin-bottom: 34px; }
+  .hero p.lede strong { color: var(--ink); font-weight: 600; }
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 11px 22px; font-size: 15px; font-weight: 600;
+    text-decoration: none; border: 1px solid var(--ink);
+  }
+  .btn.primary { background: var(--ink); color: var(--paper); }
+  .btn.primary:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.quiet { color: var(--ink); }
+  .btn.quiet:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── Chat vignette ────────────────── */
+  .chat {
+    background: var(--card); border: 1px solid var(--line);
+    padding: 26px 24px 22px;
+  }
+  .chat-head {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); padding-bottom: 16px; margin-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .chat-head .cdot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .msg { max-width: 88%; margin-bottom: 12px; font-size: 15px; line-height: 1.55; }
+  .msg .who {
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 4px;
+  }
+  .msg .bubble { padding: 10px 14px; border: 1px solid var(--line); background: var(--paper); border-radius: 2px 10px 10px 10px; }
+  .msg.user { margin-left: auto; text-align: right; }
+  .msg.user .bubble { background: var(--ink); color: var(--paper); border-color: var(--ink); border-radius: 10px 2px 10px 10px; text-align: left; }
+  .msg .bubble em { font-style: normal; border-bottom: 2px solid var(--accent); }
+
+  /* ── Sections ─────────────────────── */
+  section { padding: 76px 0; border-bottom: 1px solid var(--line); }
+  h2 {
+    font-family: var(--serif); font-size: 32px; font-weight: 700;
+    line-height: 1.2; margin-bottom: 16px; letter-spacing: -0.01em;
+  }
+  .section-intro { color: var(--muted); max-width: 62ch; margin-bottom: 48px; font-size: 17.5px; }
+  .section-intro strong { color: var(--ink); font-weight: 600; }
+
+  /* ── Funnel steps ─────────────────── */
+  .steps { list-style: none; }
+  .step {
+    display: grid; grid-template-columns: 92px 240px 1fr; gap: 28px;
+    padding: 26px 0; border-top: 1px solid var(--line);
+  }
+  .step:last-child { border-bottom: 1px solid var(--line); }
+  .step .num {
+    font-family: var(--mono); font-size: 14px; color: var(--accent);
+    padding-top: 3px;
+  }
+  .step h3 { font-family: var(--serif); font-size: 20px; font-weight: 700; }
+  .step p { color: var(--muted); font-size: 16px; max-width: 58ch; }
+  .step .check {
+    display: inline-block; margin-top: 8px; font-size: 12.5px; font-family: var(--mono);
+    color: var(--ink); background: #F1EFEA; border: 1px solid var(--line);
+    padding: 3px 9px;
+  }
+
+  .aside-note {
+    margin-top: 44px; padding: 22px 26px; background: var(--card);
+    border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    max-width: 72ch;
+  }
+  .aside-note p { font-size: 16px; color: var(--muted); }
+  .aside-note p strong { color: var(--ink); }
+
+  /* ── Verification table ───────────── */
+  table.verify { width: 100%; border-collapse: collapse; font-size: 16px; }
+  table.verify th {
+    text-align: left; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; padding: 0 18px 12px 0;
+    border-bottom: 1px solid var(--line-strong);
+  }
+  table.verify td { padding: 18px 18px 18px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.verify td:first-child { font-weight: 600; white-space: nowrap; width: 220px; }
+  table.verify td:last-child { color: var(--muted); }
+  table.verify .how { font-family: var(--mono); font-size: 13px; color: var(--ink); display: block; margin-top: 5px; }
+
+  .kicker {
+    margin-top: 40px; font-family: var(--serif); font-size: 23px; line-height: 1.4;
+    max-width: 30ch;
+  }
+  .kicker .u { border-bottom: 2px solid var(--accent); }
+
+  /* ── Rules ────────────────────────── */
+  .rules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .rule { background: var(--card); padding: 28px 26px; }
+  .rule .no {
+    font-family: var(--mono); font-size: 13px; color: var(--accent); display: block; margin-bottom: 10px;
+  }
+  .rule h3 { font-family: var(--serif); font-size: 19px; margin-bottom: 8px; }
+  .rule p { font-size: 15.5px; color: var(--muted); }
+
+  /* ── Operators ────────────────────── */
+  .op-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+  .op-list { list-style: none; }
+  .op-list li { padding: 16px 0; border-top: 1px solid var(--line); font-size: 16px; }
+  .op-list li:last-child { border-bottom: 1px solid var(--line); }
+  .op-list li strong { display: block; font-weight: 600; margin-bottom: 3px; }
+  .op-list li span { color: var(--muted); font-size: 15.5px; }
+
+  .metrics-card { background: var(--card); border: 1px solid var(--line); padding: 26px; }
+  .metrics-card .mc-title {
+    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+    padding-bottom: 14px; border-bottom: 1px solid var(--line); margin-bottom: 6px;
+  }
+  .mrow { display: flex; justify-content: space-between; align-items: baseline; padding: 13px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+  .mrow:last-child { border-bottom: 0; }
+  .mrow .mv { font-family: var(--mono); font-size: 14px; }
+  .mrow .bar { flex: 1; height: 4px; background: #F1EFEA; margin: 0 16px; position: relative; top: -3px; }
+  .mrow .bar i { display: block; height: 100%; background: var(--accent); }
+  .metrics-card .foot { font-size: 13px; color: var(--muted); padding-top: 14px; }
+
+  /* ── Footer ───────────────────────── */
+  footer { padding: 48px 0 64px; font-size: 14px; color: var(--muted); }
+  footer .frow { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  footer a { color: var(--muted); }
+  footer a:hover { color: var(--accent); }
+
+  @media (max-width: 880px) {
+    h1 { font-size: 36px; }
+    .hero { padding: 56px 0; }
+    .hero-grid { grid-template-columns: 1fr; gap: 44px; }
+    .step { grid-template-columns: 56px 1fr; }
+    .step p { grid-column: 2; }
+    .step h3 { padding-top: 2px; }
+    .rules { grid-template-columns: 1fr; }
+    .op-grid { grid-template-columns: 1fr; gap: 40px; }
+    table.verify td:first-child { white-space: normal; width: auto; }
+    nav.top { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="masthead">
+    <a class="wordmark" href="#">Coral<span class="dot">.</span></a>
+    <nav class="top">
+      <a href="#method">Method</a>
+      <a href="#proof">Proof</a>
+      <a href="#rules">Rules</a>
+      <a href="#operators">Operators</a>
+      <a href="https://github.com/bobodread876/coral">GitHub</a>
+    </nav>
+  </header>
+
+  <section class="hero" style="border-bottom:none; padding-bottom:0;">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">Bitcoin onboarding, done properly</div>
+        <h1>Every community has one person doing all the hand&#8209;holding.</h1>
+        <p class="lede">
+          Coral is that person, on WhatsApp, around the clock. It walks a
+          newcomer from curiosity to their first Bitcoin payment
+          <strong>one step at a time</strong> — and hands off to a human
+          exactly when it should.
+        </p>
+        <div class="cta-row">
+          <a class="btn primary" href="#method">Read the method</a>
+          <a class="btn quiet" href="https://github.com/bobodread876/coral">View the source</a>
+        </div>
+      </div>
+      <div class="chat" aria-label="Example conversation">
+        <div class="chat-head"><span class="cdot"></span> First contact</div>
+        <div class="msg">
+          <div class="who">Coral</div>
+          <div class="bubble">
+            Hello — I'm Coral, the onboarding helper for this community.
+            Before anything else: <em>I will never ask you for money, seed
+            words, or documents.</em> Anyone who does is trying to steal from
+            you. Say “human” at any time to reach a real person.
+          </div>
+        </div>
+        <div class="msg">
+          <div class="who">Coral</div>
+          <div class="bubble">Would you like help setting up your first Bitcoin wallet?</div>
+        </div>
+        <div class="msg user">
+          <div class="who">Newcomer</div>
+          <div class="bubble">yes — where do I start?</div>
+        </div>
+        <div class="msg">
+          <div class="who">Coral</div>
+          <div class="bubble">One step at a time. First: is your phone an iPhone or an Android?</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="method">
+    <div class="eyebrow">The method</div>
+    <h2>A state machine, not a chatbot.</h2>
+    <p class="section-intro">
+      Onboarding is a funnel with five verified steps. Deterministic code
+      owns progression — <strong>the conversation can never skip a step,
+      guess a balance, or improvise with money.</strong> The assistant talks;
+      the machine decides.
+    </p>
+
+    <ol class="steps">
+      <li class="step">
+        <span class="num">01</span>
+        <h3>Greeting</h3>
+        <p>The anti-scam pledge comes before anything else: no money, no seed
+           words, no documents, ever — and how to reach a human. Trust is the
+           first deliverable.
+           <span class="check">exit: pledge delivered</span></p>
+      </li>
+      <li class="step">
+        <span class="num">02</span>
+        <h3>Wallet</h3>
+        <p>Install, sign up, choose a username — one instruction per message,
+           at the newcomer's pace. The wallet is then verified against the
+           live Lightning network, not taken on faith.
+           <span class="check">exit: wallet verified</span></p>
+      </li>
+      <li class="step">
+        <span class="num">03</span>
+        <h3>First receive</h3>
+        <p>A community member sends the newcomer their first sats, and Coral
+           confirms what they saw happen. This is the moment Bitcoin stops
+           being an idea.
+           <span class="check">exit: receipt confirmed</span></p>
+      </li>
+      <li class="step">
+        <span class="num">04</span>
+        <h3>First spend</h3>
+        <p>Coral issues a small test invoice and verifies settlement
+           cryptographically. The newcomer has now sent a real payment —
+           provably, not anecdotally.
+           <span class="check">exit: settlement verified</span></p>
+      </li>
+      <li class="step">
+        <span class="num">05</span>
+        <h3>Community</h3>
+        <p>The end state is not an app install — it's a person who knows
+           people. A group invite, an introduction, a next meetup, and a
+           30-day check-in.
+           <span class="check">exit: joined</span></p>
+      </li>
+    </ol>
+
+    <div class="aside-note">
+      <p><strong>Escalation is a feature, not a failure.</strong> A request
+      for a human, a safety trigger, frustration, or three failed
+      verifications pauses the funnel and pings a real community member with
+      full context. When it's resolved, Coral resumes exactly where it
+      left off.</p>
+    </div>
+  </section>
+
+  <section id="proof">
+    <div class="eyebrow">Proof, not promises</div>
+    <h2>Verified at every step. Zero credentials.</h2>
+    <p class="section-intro">
+      Coral verifies progress against the live network using open Lightning
+      standards — <strong>it holds no funds, holds no keys, and needs no API
+      access to anyone's wallet.</strong>
+    </p>
+
+    <table class="verify">
+      <thead><tr><th>Claim</th><th>How Coral knows</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>The wallet exists</td>
+          <td>Every username is a Lightning address. Coral resolves it against
+              the live network before moving on.
+              <span class="how">LNURL-pay lookup · no keys required</span></td>
+        </tr>
+        <tr>
+          <td>A payment arrived</td>
+          <td>Confirmed in conversation with the newcomer — amount and
+              notification, not just “ok”. An automated welcome payment is
+              available where the community enables it.
+              <span class="how">guided confirmation · optional faucet</span></td>
+        </tr>
+        <tr>
+          <td>A payment was sent</td>
+          <td>Coral issues a small test invoice and polls its settlement
+              proof. Either the payment settled or it didn't — no self-reporting.
+              <span class="how">LUD-21 verify · cryptographic settlement</span></td>
+        </tr>
+        <tr>
+          <td>Anything Coral did</td>
+          <td>Every action appends to an immutable event log. “Why did Coral
+              do that?” always has an exact, timestamped answer.
+              <span class="how">append-only audit trail</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="kicker">Coral cannot ask for what it cannot use —
+      <span class="u">it has nowhere to put your money and no use for your keys.</span>
+    </p>
+  </section>
+
+  <section id="rules">
+    <div class="eyebrow">The hard rules</div>
+    <h2>Non-negotiables, enforced in code.</h2>
+    <p class="section-intro">
+      Newcomers are the softest target in Bitcoin. Coral's safety posture is
+      not a policy document — <strong>it's the part of the system that cannot
+      be talked out of anything.</strong>
+    </p>
+
+    <div class="rules">
+      <div class="rule">
+        <span class="no">Rule 1</span>
+        <h3>Never asks. Never accepts.</h3>
+        <p>Seed phrases, private keys, passwords, documents, money — Coral
+           will not request them and will not take them, and it says so in
+           its first message.</p>
+      </div>
+      <div class="rule">
+        <span class="no">Rule 2</span>
+        <h3>Seed words trip an alarm.</h3>
+        <p>Any mention of recovery phrases — from anyone, in any direction —
+           triggers an immediate warning and a human follow-up.
+           Unconditionally.</p>
+      </div>
+      <div class="rule">
+        <span class="no">Rule 3</span>
+        <h3>“Human” always works.</h3>
+        <p>One word reaches a real community member, any time, no argument.
+           Coral is also honest about being software, every time it's asked.</p>
+      </div>
+      <div class="rule">
+        <span class="no">Rule 4</span>
+        <h3>Invited, not inbound.</h3>
+        <p>Coral meets people through the community — a meetup, a referral, a
+           trusted introduction. It does no cold outreach, ever.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="operators" style="border-bottom:none;">
+    <div class="eyebrow">For operators</div>
+    <h2>Built for the people running the community.</h2>
+    <p class="section-intro">
+      Coral is an activation tool for wallet teams and community leads.
+      <strong>The number that matters is cost per activated wallet</strong> —
+      and every step of the funnel is measured so you can see exactly where
+      newcomers succeed, stall, or need a person.
+    </p>
+
+    <div class="op-grid">
+      <ul class="op-list">
+        <li><strong>Funnel you can read</strong>
+            <span>Conversion per step, time-in-step, stall queue, escalation
+            rate — from the event log, not from vibes.</span></li>
+        <li><strong>Escalations with context</strong>
+            <span>Your ops group receives the user's step, history, and
+            trigger — volunteers pick up a briefing, not a mystery.</span></li>
+        <li><strong>Your number, your data</strong>
+            <span>Runs on your own WhatsApp identity via the open-source
+            NanoClaw runtime. The event log lives on your storage.</span></li>
+        <li><strong>Open source, MIT</strong>
+            <span>The state machine, safety policy, and verification layer
+            are all inspectable — as they should be, in this space.</span></li>
+      </ul>
+
+      <div class="metrics-card" aria-label="Illustrative funnel metrics">
+        <div class="mc-title">Pilot funnel — illustrative</div>
+        <div class="mrow"><span>Greeted</span><span class="bar"><i style="width:100%"></i></span><span class="mv">30</span></div>
+        <div class="mrow"><span>Wallet verified</span><span class="bar"><i style="width:66%"></i></span><span class="mv">20</span></div>
+        <div class="mrow"><span>First receive</span><span class="bar"><i style="width:53%"></i></span><span class="mv">16</span></div>
+        <div class="mrow"><span>First spend</span><span class="bar"><i style="width:36%"></i></span><span class="mv">11</span></div>
+        <div class="mrow"><span>Joined community</span><span class="bar"><i style="width:30%"></i></span><span class="mv">9</span></div>
+        <div class="foot">Pass bars are declared before launch; kill criteria too. Discipline over hope.</div>
+      </div>
+    </div>
+
+    <div class="cta-row" style="margin-top:52px;">
+      <a class="btn primary" href="https://github.com/bobodread876/coral">Deploy from GitHub</a>
+      <a class="btn quiet" href="https://github.com/bobodread876/coral/blob/main/DEPLOYMENT.md">Read the deployment guide</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="frow">
+      <div>Coral<span style="color:var(--accent)">.</span> — an open venture from the <a href="https://patoo.ai/ideas">patoo.ai</a> pipeline.</div>
+      <div><a href="https://github.com/bobodread876/coral">GitHub</a> &nbsp;·&nbsp; MIT license</div>
+    </div>
+  </footer>
+</div>
+
+</body>
+</html>
