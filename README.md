@@ -3,8 +3,8 @@
 **AI onboarding concierge that turns Bitcoin curiosity into action.**
 
 Every Bitcoin community has one exhausted person doing 1-on-1 hand-holding
-for newcomers. Coral is that person, cloned, in WhatsApp, 24/7 — and it hands
-off to a human exactly when it should.
+for newcomers. Coral is that person, cloned, in WhatsApp, 24/7. It hands
+off to a human when it should.
 
 v0.1-beta prototype for the venture assessed at
 [patoo.ai/ideas](https://patoo.ai/ideas). Framing: **a Flash activation
@@ -13,9 +13,9 @@ cost per activated wallet vs. what acquisition otherwise costs.
 
 ## How it works
 
-Onboarding is a **funnel state machine**, not freeform chat. Deterministic
+Onboarding is a **funnel state machine** with per-step scripts. Deterministic
 code owns progression and verification; the LLM owns conversation *within*
-a step, guided by per-step scripts.
+a step.
 
 ```
 new → greeted → wallet_setup → first_receive → first_spend → community → graduated
@@ -24,7 +24,7 @@ new → greeted → wallet_setup → first_receive → first_spend → community
          └── opted_out
 ```
 
-| Step verified | How — zero credentials, no custody |
+| Step verified | How (zero credentials, no custody) |
 | --- | --- |
 | Wallet exists | LNURL-pay lookup on `username@flashapp.me` (live-tested ✓) |
 | First receive | Meetup buddy zaps the newcomer; manual confirm (faucet interface ready, disabled) |
@@ -53,7 +53,7 @@ npx tsx src/cli.ts verify-wallet demo-user
 npx tsx src/cli.ts metrics
 ```
 
-`coral status <user>` returns the state **plus the step script** — that is
+`coral status <user>` returns the state **plus the step script**. That is
 the contract with the agent runtime: look up where the user is, follow the
 script, call the CLI to advance.
 
@@ -65,11 +65,11 @@ script, call the CLI to advance.
 | `src/store.ts` | Append-only JSONL event log; state derived by replay |
 | `src/escalate.ts` | Safety/escalation policy (seed-phrase guard, frustration, stalls) |
 | `src/verify.ts` | LNURL wallet checks + LUD-21 spend settlement |
-| `src/faucet.ts` | Starter-sats interface (Noop in beta — see DEPLOYMENT.md) |
+| `src/faucet.ts` | Starter-sats interface (Noop in beta, see DEPLOYMENT.md) |
 | `src/coral.ts` | Orchestrator + per-step agent guidance |
 | `src/cli.ts` | Agent tool surface + operator commands + `sim` |
 | `skill/SKILL.md` | NanoClaw persona: tone, guardrails, ops-group escalation |
 | `DEPLOYMENT.md` | Pilot design, pass bars, kill criteria, open resource asks |
 
-Run `npm test` — 29 tests cover transitions, policy, replay, verification,
+Run `npm test`. 29 tests cover transitions, policy, replay, verification,
 and the full orchestrated funnel.

@@ -2,12 +2,12 @@
 
 Coral's library is transport-agnostic. The intended runtime is
 [NanoClaw](https://github.com/qwibitai/nanoclaw) over Baileys (WhatsApp Web
-protocol) — same rationale as hustle-link's DEPLOYMENT.md: no Meta business
+protocol), for the same reasons as hustle-link's DEPLOYMENT.md: no Meta business
 verification, group support, sits in chat like a person. Same risk too:
 unofficial protocol, ban possible. **Pilot on a dedicated burner number.**
 
-Coral gets its **own number**, separate from Hustle Link — different trust
-postures (newcomer-facing concierge vs. vendor order desk). Shared infra,
+Coral gets its **own number**, separate from Hustle Link. Trust
+postures differ (newcomer-facing concierge vs. vendor order desk). Shared infra,
 separate identities.
 
 ## Wiring
@@ -18,13 +18,13 @@ separate identities.
    `src/cli.ts` for state, verification, and metrics.
 4. Register an **ops group** (community volunteers). Escalations are posted
    there with the user's step, history, and reason.
-5. Env: `CORAL_DATA` (event log path — mount it on persistent storage),
+5. Env: `CORAL_DATA` (event log path; mount it on persistent storage),
    `CORAL_TREASURY` (see below), `CORAL_SPEND_SATS` (default 21).
 
 ## The treasury address (first-spend verification)
 
 First-spend is proven by the newcomer paying a small invoice issued against
-`CORAL_TREASURY`. Settlement is polled via LUD-21 `verify` — which **Flash
+`CORAL_TREASURY`. Settlement is polled via LUD-21 `verify`, which **Flash
 does not expose yet**, so for the pilot the treasury address must live on a
 LUD-21-capable provider (Alby and coinos both qualify). Sats accumulating
 there are community funds; sweep them to the community Flash wallet
@@ -37,7 +37,7 @@ credential-free on Flash rails. Small server change, two ventures unblocked.
 ## Starter sats (first-receive)
 
 Disabled in v0.1-beta (`NoopFaucet`). The pilot's first-receive moment is a
-human — the meetup buddy zaps the newcomer a few hundred sats, and Coral
+human: the meetup buddy zaps the newcomer a few hundred sats, and Coral
 confirms manually after the newcomer describes the received payment. This is
 deliberate: the faucet is the abuse surface (SIM farms), and the pilot's
 referral-gated cohort doesn't need it automated. Automating it is a budget +
@@ -45,7 +45,7 @@ credential decision (see asks below).
 
 ## Safety posture
 
-- Coral never asks for seed phrases, private keys, money, or documents — and
+- Coral never asks for seed phrases, private keys, money, or documents, and
   says so in the greeting. The seed-phrase guard warns + escalates on every
   message that touches the topic, unconditionally.
 - Referral-gated intake for the pilot: QR at meetups, vendor stickers, warm
@@ -77,7 +77,7 @@ human-only onboarding. Park it, keep the learnings for Hustle Link.
 ## Open resource asks (approvals needed before go-live)
 
 1. **Dedicated WhatsApp number** (burner SIM) for the Coral identity.
-2. **Treasury address** on a LUD-21 provider (Alby/coinos — free) + whose
+2. **Treasury address** on a LUD-21 provider (Alby/coinos; free) + whose
    account it is.
 3. **Faucet decision**: keep manual for the pilot (recommended), or approve
    a funded sender (Flash API grant / NWC / LNbits) + budget (~10k sats per
